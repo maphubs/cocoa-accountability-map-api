@@ -1,0 +1,48 @@
+{
+  "name": "cam-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "DEBUG=\"maphubs:*,maphubs-error:*\" nodemon ./src/server.js",
+    "eslint": "node_modules/eslint/bin/eslint.js",
+    "modclean": "modclean -n default:safe -r --ignore=\"@bit/kriscarle.maphubs-utils.maphubs-utils.log\""
+  },
+  "dependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/register": "^7.6.0",
+    "@bit/kriscarle.maphubs-utils.maphubs-utils.log": "^1.1.0",
+    "@turf/rewind": "^5.1.5",
+    "bluebird": "^3.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "etag": "^1.8.1",
+    "express": "^4.17.1",
+    "getenv": "^1.0.0",
+    "knex": "^0.21.1",
+    "knex-postgis": "^0.12.0",
+    "moment": "^2.26.0",
+    "pg": "^8.2.1",
+    "shrink-ray-current": "^4.0.0"
+  },
+  "optionalDependencies": {
+    "node-zopfli-es": "~1.0.3"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^7.2.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-flowtype": "^5.1.1",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-unicorn": "^20.1.0",
+    "flow-bin": "^0.127.0",
+    "nodemon": "^2.0.4"
+  }
+}
