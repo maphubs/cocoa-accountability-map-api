@@ -7,9 +7,18 @@ const Promise = require('bluebird')
 const fs = require('fs')
 
 const YEAR = 20
-const MONTHS = [1, 2, 3, 4, 5, 6, 7];
+const DELETE_MONTHS = [7] // we will replace these
+const MONTHS = [7, 8, 9];
 
 (async () => {
+  if (DELETE_MONTHS && DELETE_MONTHS.length > 0) {
+    await Promise.mapSeries(DELETE_MONTHS, async (month) => {
+      await db.raw(`DELETE FROM l4_areas where month = ${month};`)
+      await db.raw(`DELETE FROM l5_areas where month = ${month};`)
+      return db.raw(`DELETE FROM ews where month = ${month};`)
+    })
+    console.log(`Deleted months: ${DELETE_MONTHS.toString()}`)
+  }
   await Promise.mapSeries(MONTHS, async (month) => {
     const rawdata = fs.readFileSync(`./data/20${YEAR}-${month < 10 ? '0' : ''}${month}.geojson`)
     const data = JSON.parse(rawdata)
