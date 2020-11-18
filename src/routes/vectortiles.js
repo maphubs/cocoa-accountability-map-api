@@ -5,7 +5,7 @@ const etag = require('etag')
 const config = require('../config')
 
 module.exports = function (app: any) {
-  app.get('/api/mvt/L4/:z(\\d+)/:x(\\d+)/:y(\\d+).pbf', async (req, res) => {
+  app.get('/api/mvt/L4/:version(\\d+)/:z(\\d+)/:x(\\d+)/:y(\\d+).pbf', async (req, res) => {
     const z = Number.parseInt(req.params.z)
     const x = Number.parseInt(req.params.x)
     const y = Number.parseInt(req.params.y)
@@ -54,7 +54,7 @@ module.exports = function (app: any) {
     }
   })
 
-  app.get('/api/mvt/L5/:z(\\d+)/:x(\\d+)/:y(\\d+).pbf', async (req, res) => {
+  app.get('/api/mvt/L5/:version(\\d+)/:z(\\d+)/:x(\\d+)/:y(\\d+).pbf', async (req, res) => {
     const z = Number.parseInt(req.params.z)
     const x = Number.parseInt(req.params.x)
     const y = Number.parseInt(req.params.y)
