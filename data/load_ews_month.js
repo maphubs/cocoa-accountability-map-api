@@ -7,8 +7,8 @@ const Promise = require('bluebird')
 const fs = require('fs')
 
 const YEAR = 20
-const DELETE_MONTHS = [7] // we will replace these
-const MONTHS = [7, 8, 9];
+const DELETE_MONTHS = [9] // we will replace these
+const MONTHS = [9, 10, 11, 12];
 
 (async () => {
   if (DELETE_MONTHS && DELETE_MONTHS.length > 0) {
@@ -20,19 +20,32 @@ const MONTHS = [7, 8, 9];
     console.log(`Deleted months: ${DELETE_MONTHS.toString()}`)
   }
   await Promise.mapSeries(MONTHS, async (month) => {
-    const rawdata = fs.readFileSync(`./data/20${YEAR}-${month < 10 ? '0' : ''}${month}.geojson`)
+    const filePath = `./data/20${YEAR}-${month < 10 ? '0' : ''}${month}.geojson`
+    const rawdata = fs.readFileSync(filePath)
     const data = JSON.parse(rawdata)
+    console.log(`opened ${filePath} with ${data.features.length} features`)
     const rows = data.features.map(feature => {
       const fixedGeom = rewind(feature.geometry)
-      return {
-        year: YEAR,
-        month,
-        geom: st.geomFromGeoJSON(fixedGeom)
+      try {
+        return {
+          year: YEAR,
+          month,
+          geom: st.geomFromGeoJSON(fixedGeom)
+        }
+      } catch (error) {
+        console.log(error.errors)
+        // console.log(fixedGeom)
+        // console.log(fixedGeom.coordinates[0])
+        // console.log(fixedGeom.coordinates[1])
+        // throw new Error('load failed due to bad GeoJSON')
       }
     })
 
     await db.batchInsert('ews', rows, 1000)
     console.log(`finished inserting ${rows.length} alert features for month ${month}`)
+    await db.raw(`
+      UPDATE ews SET geom=ST_MakeValid(geom) where NOT ST_IsValid(geom);
+    `)
     await db.raw(`
     insert into l4_areas
 select 
