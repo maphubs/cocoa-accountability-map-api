@@ -4,8 +4,8 @@ Database and API for the CAM
 
 ## Configuration
 
-* Copy .env-example to .env and change values as needed
-* Copy db-server/.env-example to db-server/.env and change values as needed
+- Copy .env-example to .env and change values as needed
+- Copy db-server/.env-example to db-server/.env and change values as needed
 
 ## Development
 
@@ -19,7 +19,20 @@ Start the app with: `yarn run dev`
 
 ## Loading data
 
-* Use `create_monthly_data.sh` to create monthly GeoJSON files from the EWS data update
+### install GDAL
 
-* Use `load_ews__month.js` to load monthly updates in the database
+on macOS install Homebrew then `brew install gdal`
 
+or using the Docker image https://hub.docker.com/r/osgeo/gdal and attaching the data folder as a volume
+
+### creating monthly data
+
+Use `create_monthly_data.sh` to create monthly GeoJSON files from the EWS data update
+
+### load grids (initial setup only)
+
+use `node data/loadgrids.js` to populate the initial H3 level 4 and 5 tables
+
+### insert into the database
+
+Use `node data/load_ews_month.js` to load monthly updates in the database, update the script to set the months to load
