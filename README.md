@@ -9,13 +9,32 @@ Database and API for the CAM
 
 ## Development
 
-Using Docker and Docker Compose to start the database:
+1. Using Docker and Docker Compose to start the database:
 
-`docker volume create cam-db-data`
+```
+docker volume create cam-db-data
+docker-compose up -d db
+```
 
-`docker-compose up -d db`
+2. Run the db migrations with
 
-Start the app with: `yarn run dev`
+```
+run-knex.sh
+```
+
+3. populate the initial H3 level 4 and 5 tables
+
+```
+node data/loadgrids.js
+```
+
+4. Load the data using instructions below
+
+5. Start the app
+
+```
+yarn run dev
+```
 
 ## Loading data
 
