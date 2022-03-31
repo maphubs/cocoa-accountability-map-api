@@ -1,4 +1,3 @@
-
 const db = require('../src/connection')
 const knexPostgis = require('knex-postgis')
 const rewind = require('@turf/rewind')
@@ -6,11 +5,12 @@ const st = knexPostgis(db)
 const Promise = require('bluebird')
 const fs = require('fs')
 
-const YEAR = 20
-const DELETE_MONTHS = [9] // we will replace these
-const MONTHS = [9, 10, 11, 12];
+const YEAR = 22
+const DELETE_MONTHS = [] // we will replace these
+const MONTHS = [1, 2]
+// const MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-(async () => {
+;(async () => {
   if (DELETE_MONTHS && DELETE_MONTHS.length > 0) {
     await Promise.mapSeries(DELETE_MONTHS, async (month) => {
       await db.raw(`DELETE FROM l4_areas where month = ${month};`)
@@ -24,7 +24,7 @@ const MONTHS = [9, 10, 11, 12];
     const rawdata = fs.readFileSync(filePath)
     const data = JSON.parse(rawdata)
     console.log(`opened ${filePath} with ${data.features.length} features`)
-    const rows = data.features.map(feature => {
+    const rows = data.features.map((feature) => {
       const fixedGeom = rewind(feature.geometry)
       try {
         return {
@@ -42,7 +42,9 @@ const MONTHS = [9, 10, 11, 12];
     })
 
     await db.batchInsert('ews', rows, 1000)
-    console.log(`finished inserting ${rows.length} alert features for month ${month}`)
+    console.log(
+      `finished inserting ${rows.length} alert features for month ${month}`
+    )
     await db.raw(`
       UPDATE ews SET geom=ST_MakeValid(geom) where NOT ST_IsValid(geom);
     `)
@@ -55,7 +57,7 @@ ews.month,
 sum(st_area(ST_Intersection(l4.geom, st_makevalid(ews.geom))::geography))/10000 as area
 from l4
 inner join ews on ST_Intersects(l4.geom, ews.geom)
-WHERE month = ${month}
+WHERE month = ${month} AND ews.year = ${YEAR}
 GROUP BY h3, ews.year, ews.month
 ORDER BY h3, ews.year, ews.month
 ;
@@ -70,7 +72,7 @@ ews.month,
 sum(st_area(ST_Intersection(l5.geom, st_makevalid(ews.geom))::geography))/10000 as area
 from l5
 inner join ews on ST_Intersects(l5.geom, ews.geom)
-WHERE month = ${month}
+WHERE month = ${month} AND ews.year = ${YEAR}
 GROUP BY h3, ews.year, ews.month
 ORDER BY h3, ews.year, ews.month
 ;
