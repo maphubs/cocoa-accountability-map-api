@@ -9,31 +9,48 @@ Database and API for the CAM
 
 ## Development
 
-1. Using Docker and Docker Compose to start the database:
+1. Install dependencies
+
+This assumes you have NodeJS v12 or higher and Yarn installed
+
+```
+yarn install
+```
+
+2. Using Docker and Docker Compose to start the database:
 
 ```
 docker volume create cam-db-data
 docker-compose up -d db
 ```
 
-2. Run the db migrations with
+Note: wait a minute or two for the database to initialize
+
+3. Run the db migrations with
 
 ```
-run-knex.sh
+./run-knex.sh migrate:latest
 ```
 
-3. populate the initial H3 level 4 and 5 tables
+4. populate the initial H3 level 4 and 5 tables
 
 ```
 node data/loadgrids.js
 ```
 
-4. Load the data using instructions below
+5. Load the data using instructions below
 
-5. Start the app
+6. Start the app
 
 ```
 yarn run dev
+```
+
+### to clear the data to start over
+
+```
+docker-compose down
+docker volume rm cam-db-data
 ```
 
 ## Loading data
@@ -46,12 +63,12 @@ or using the Docker image https://hub.docker.com/r/osgeo/gdal and attaching the 
 
 ### creating monthly data
 
-Use `create_monthly_data.sh` to create monthly GeoJSON files from the EWS data update
+Use `data/create_monthly_data.sh` to create monthly GeoJSON files from the EWS data update
 
-### load grids (initial setup only)
+### load grids (initial setup only, you may have already done this above)
 
-use `node data/loadgrids.js` to populate the initial H3 level 4 and 5 tables
+use `node data/loadgrids.js`to populate the initial H3 level 4 and 5 tables
 
 ### insert into the database
 
-Use `node data/load_ews_month.js` to load monthly updates in the database, update the script to set the months to load
+Use `node data/load_ews_month.js` or the `load-data.sh` script in development, to load monthly updates in the database, update the script to set the months to load
