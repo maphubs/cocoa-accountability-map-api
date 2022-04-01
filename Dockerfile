@@ -1,7 +1,7 @@
 FROM node:12-alpine as builder
 WORKDIR /app
 RUN apk update && \
-    apk add --no-cache git python make gcc g++
+    apk add --no-cache git python3 make gcc g++
 COPY package.json yarn.lock /app/
 RUN yarn --production --pure-lockfile && \
     yarn global add modclean && yarn run modclean
